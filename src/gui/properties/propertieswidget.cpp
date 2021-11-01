@@ -519,6 +519,9 @@ void PropertiesWidget::loadDynamicData()
 
 void PropertiesWidget::loadUrlSeeds()
 {
+    if (!m_torrent)
+        return;
+
     m_ui->listWebSeeds->clear();
     qDebug("Loading URL seeds");
     const QVector<QUrl> hcSeeds = m_torrent->urlSeeds();
@@ -607,7 +610,7 @@ void PropertiesWidget::displayFilesListMenu(const QPoint &)
             }
 
             // Save changes
-            filteredFilesChanged();
+            this->applyPriorities();
         };
 
         QMenu *subMenu = menu->addMenu(tr("Priority"));
@@ -660,6 +663,9 @@ void PropertiesWidget::displayFilesListMenu(const QPoint &)
                 const QModelIndex &index = selectedRows[i];
                 m_propListModel->setData(index.sibling(index.row(), PRIORITY)
                     , static_cast<int>(priority));
+
+                // Save changes
+                this->applyPriorities();
             }
         });
     }
